@@ -1,0 +1,243 @@
+import json
+from fastapi import FastAPI, File, UploadFile, Form
+from fastapi.responses import Response, JSONResponse
+from typing import Optional
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+from orchestrator import CryptoOrchestrator
+from fastapi import FastAPI
+from pathlib import Path
+orchestrator=CryptoOrchestrator()
+app = FastAPI()
+
+app.add_middleware(
+CORSMiddleware,
+allow_origins=["*"],
+allow_credentials=True,
+allow_methods=["*"],
+allow_headers=["*"],
+)
+
+
+CLIENT_DIR = Path(__file__).resolve().parent.parent / "ChaosCipherClient"
+
+@app.get("/")
+async def root():
+    print(CLIENT_DIR)
+    return FileResponse(CLIENT_DIR / "index.html")
+
+@app.post("/encrypt/image")
+async def encrypt_image_enpoint(
+        system:str=Form(...),
+        params: str = Form(...),
+        data_type:str=Form(...),
+        mode: str = Form(...),
+        file: UploadFile = File(...),
+):
+    original_file=await file.read()
+    params_obj = json.loads(params)
+    mode = mode.strip().lower()
+    encrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode="",
+        content=original_file,
+        process_type="encrypt"
+    )
+
+
+
+    new_filename=f"processed_{file.filename}"
+    return Response(
+        content=encrypted_content,
+        media_type="image/png",
+        headers={"Content-Disposition": 'attachment; filename="processed.png"'}
+    )
+@app.post("/decrypt/image")
+async def decrypt_image_enpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        mode: str = Form(...),
+        file: UploadFile = File(...),
+):
+    original_file = await file.read()
+    mode = mode.strip().lower()
+    params_obj = json.loads(params)
+    decrted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        content=original_file,
+        mode="",
+        process_type="decrypt"
+    )
+
+    new_filename = f"processed_{file.filename}"
+    return Response(
+        content=decrted_content,
+        media_type="image/png",
+        headers={"Content-Disposition": 'attachment; filename="processed.png"'}
+    )
+
+@app.post("/encrypt/text")
+async def encrypt_text_ednpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        mode: str = Form(...),
+        text:str=Form(...)
+):
+    mode = mode.strip().lower()
+    params_obj = json.loads(params)
+    encrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode=mode,
+        content=text,
+        process_type="encrypt"
+    )
+    print(mode)
+    return {
+        "status": "success",
+        "processed_text": encrypted_content,
+    }
+@app.post("/decrypt/text")
+async def decrypt_text_ednpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        mode: str = Form(...),
+        text: str = Form(...)
+):
+    mode = mode.strip().lower()
+    params_obj = json.loads(params)
+    decrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode=mode,
+        content=text,
+        process_type="decrypt"
+    )
+
+    return {
+        "status": "success",
+        "processed_text": decrypted_content,
+    }
+
+@app.post("/encrypt/audio")
+async def encrypt_audio_enpoint(
+        system:str=Form(...),
+        params: str = Form(...),
+        data_type:str=Form(...),
+        file: UploadFile = File(...),
+):
+    original_file = await file.read()
+    params_obj = json.loads(params)
+    encrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode="bits",
+        content=original_file,
+        process_type="encrypt"
+    )
+    new_filename = f"processed_{file.filename}"
+    return Response(
+        content=encrypted_content,
+        media_type=file.content_type,
+        headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
+    )
+
+
+
+@app.post("/decrypt/audio")
+async def decrypt_audio_enpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        file: UploadFile = File(...),
+):
+    original_file = await file.read()
+    params_obj = json.loads(params)
+    decrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode="bits",
+        content=original_file,
+        process_type="decrypt"
+    )
+    new_filename = f"processed_{file.filename}"
+    return Response(
+        content=decrypted_content,
+        media_type=file.content_type,
+        headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
+    )
+
+
+
+@app.post("/encrypt/file")
+async def encrypt_file_enpoint(
+        system:str=Form(...),
+        params: str = Form(...),
+        data_type:str=Form(...),
+        file: UploadFile = File(...),
+):
+    original_file = await file.read()
+    params_obj = json.loads(params)
+    encrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode="bits",
+        content=original_file,
+        process_type="encrypt",
+
+    )
+    in_name = file.filename
+    file_extention=Path(in_name).suffix.lstrip(".")
+    new_filename = f"processed_{file.filename}"
+    return Response(
+        content=encrypted_content,
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
+    )
+
+
+
+
+
+@app.post("/decrypt/file")
+async def decrypt_file_enpoint(
+        system:str=Form(...),
+        params: str = Form(...),
+        data_type:str=Form(...),
+        file: UploadFile = File(...),
+):
+    original_file = await file.read()
+    params_obj = json.loads(params)
+    decrypted_content = orchestrator.execute_request(
+        system_type=system,
+        system_params=params_obj,
+        crypt_method=data_type,
+        mode="bits",
+        content=original_file,
+        process_type="decrypt",
+
+    )
+    in_name = file.filename
+    file_extention = Path(in_name).suffix.lstrip(".")
+    return Response(
+        content=decrypted_content,
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
+    )
+
+# Монтируем статику клиента ПОСЛЕДНИМ, чтобы не перехватывать API-маршруты
+app.mount("/", StaticFiles(directory=CLIENT_DIR), name="client")

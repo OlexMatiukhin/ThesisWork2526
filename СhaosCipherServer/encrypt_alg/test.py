@@ -1,0 +1,36 @@
+from io import BytesIO
+
+import encrypt_alg.audio_encypt as audio_encypt
+from strategies import ImageCryptor, TextCryptor
+from generators import ChaosFactory
+#import PIL.Image as Image
+generator_factory = ChaosFactory()
+dict = {"logisticXLorenz":0.3, "lorenzX":1, "lorenzY":2, "lorenzZ":3}
+gen1= generator_factory.create_generator("lorenz", dict, "bits" )
+"""
+image_strategy = ImageCryptor()
+filename = "C:\\Users\\САША\\Desktop\\Диплом 25\\ExperimentalImages\\1024x768.png"
+with open(filename, "rb") as f:
+    img_bytes = f.read()
+encrypted_img = image_strategy.process(img_bytes, gen1, "encrypt")
+decrypted_img = image_strategy.process(encrypted_img, gen1, "decrypt")
+"""
+"""text_strategy = TextCryptor()
+text = "Who tried to eat an elephant?"
+encrypted_text = text_strategy.process(text, gen1, "encrypt", "bits")
+decrypted_text = text_strategy.process(encrypted_text, gen1, "decrypt", "bits")
+print(encrypted_text)
+print(decrypted_text)
+"""
+
+"""text_strategy = TextCryptor()
+text = "Who tried to eat an elephant?"
+encrypted_text = text_strategy.process(text, gen1, "encrypt", "chars")
+decrypted_text = text_strategy.process(encrypted_text, gen1, "decrypt", "chars")
+print(encrypted_text)
+print(decrypted_text)"""
+
+filename = "C:\\Windows\\Media\\Alarm01.wav"
+with open(filename, "rb") as f:
+    audio_bytes = f.read()
+encrypted_audio = audio_encypt.encrypt_auido(audio_bytes,gen1)
