@@ -3,13 +3,15 @@ import { getDataFromActiveParametersFormANDHeader } from "../formData/getFromDat
 import { getVisibleBlock } from "../dataBlock/getVisibleBlock.js";
 import { getUrlByBlockIdAndProcessType } from "./getUrlByBlockIdAndProcessType.js";
 import { setErrorInDataBlock, setProgressBarInDataBlock } from "../dataBlock/setProgressAndErrorBlock.js";
-import { bindProcessedFile } from "./readFile.js";       
+import { bindProcessedFile } from "./readFile.js";    
+import { blockUnblockHeaderElements } from "../header/headerBlock.js";   
 export function uploadStoredFile(zone, operation){
         const file = zone.selectedFile;
         if (!file){
             setErrorInDataBlock(zone, "Оберіть файл перед відправкою", true)
             return;
         }
+
         const formData = getDataFromActiveParametersFormANDHeader();
         if(!formData) return
         const dataBlock = getVisibleBlock();
@@ -27,7 +29,7 @@ export function uploadStoredFile(zone, operation){
         const xhr=new XMLHttpRequest();
         zone.__xhr=xhr;   
          xhr.open("POST", chosen_URL, true);
-          
+        blockUnblockHeaderElements(true);
         xhr.responseType = 'blob';
         xhr.upload.addEventListener("progress", (e)=>{
             if(!e.lengthComputable) return
@@ -37,21 +39,32 @@ export function uploadStoredFile(zone, operation){
         xhr.addEventListener("load", ()=>{
             if(xhr.status >= 200 && xhr.status < 300){
                 const blob = xhr.response;
-                bindProcessedFile(blob);
+                // Extract extension from Content-Disposition: filename="processed.docx"
+                const disposition = xhr.getResponseHeader("Content-Disposition") || "";
+                const match = disposition.match(/filename[^;=\n]*=["']?[^.]+\.([^"';\n]+)/);
+                const ext = match ? match[1] : null;
+                bindProcessedFile(blob, ext);
                 setProgressBarInDataBlock(dataBlock, 100, true);
                 setTimeout(()=>{ setProgressBarInDataBlock(dataBlock, 0, false)}, 500);
 
             }
             else{
+                blockUnblockHeaderElements(false);
                 setProgressBarInDataBlock(dataBlock, 0, false)
                 setErrorInDataBlock(dataBlock,"Помилка при завнтаженні даних на сервер.", true);
             }
         })
 
         xhr.addEventListener("error", ()=>{
-             setProgressBarInDataBlock(dataBlock, 0, false)
+            blockUnblockHeaderElements(false);
+            setProgressBarInDataBlock(dataBlock, 0, false)
             setErrorInDataBlock(dataBlock,"Помилка при відправці даних на сервер.", true);
         })
+        xhr.addEventListener("abort", () => {
+        blockUnblockHeaderElements(false);
+        setProgressBarInDataBlock(dataBlock, 0, false);
+        setErrorInDataBlock(dataBlock, "", false);
+        });
         xhr.send(formData);
         
        

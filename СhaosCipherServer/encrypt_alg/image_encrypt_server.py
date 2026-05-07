@@ -5,6 +5,7 @@ from io import BytesIO
 import numpy as np
 import PIL.Image as Image
 import math
+from .crypto_marker import add_marker, remove_marker
 
 MAGIC =b'FSM1'
 HEADER_LEN = 16
@@ -122,7 +123,7 @@ def generate_A0(A_prev, A_base):
             for p in range(m1):
                 for q in range(m1):
                     A0[i*m1+p, j*m1+q] = A_prev[i,j]*factor + A_base[p, q]
-    return A0;
+    return A0
 
 def get_FSM(base_matrix,iterations):
     A1r = rank(base_matrix)
@@ -135,7 +136,7 @@ def scrambling(C1, side_size, iterations, PO, base_matrix):
     matrix_size=side_size*side_size
     PO_flatten = PO.reshape(matrix_size, 3)
     sorted_indx = np.argsort(C1, kind="stable")
-    fsm=get_FSM(base_matrix, iterations);
+    fsm=get_FSM(base_matrix, iterations)
     fsm_1= np.asarray(fsm).ravel().astype(np.int64)
     P1 = np.empty_like(PO_flatten)
     for i in range(matrix_size):
@@ -240,14 +241,15 @@ def encrypt_image(original_file, gen):
         #redacted_immage = buf.getvalue()
         #image_3=Image.fromarray(redacted_array_defused,mode='RGB')
         #image_3.show()
-        return buf.getvalue()
+        return add_marker(buf.getvalue(), "")
     except Exception as e:
         raise RuntimeError(f"Image processing failed: {e}") from e
 
 #Decrypt
 def decrypt_image(original_file, gen):
     try:
-        img = Image.open(BytesIO(original_file))
+        clean_data, meta = remove_marker(original_file)
+        img = Image.open(BytesIO(clean_data))
         img.load()
         img = img.convert("RGB")
         pixels = np.array(img)

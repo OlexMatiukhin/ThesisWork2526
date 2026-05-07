@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-
+from fastapi.responses import StreamingResponse
 from orchestrator import CryptoOrchestrator
 from fastapi import FastAPI
 from pathlib import Path
@@ -130,6 +130,9 @@ async def decrypt_text_ednpoint(
         "processed_text": decrypted_content,
     }
 
+
+
+
 @app.post("/encrypt/audio")
 async def encrypt_audio_enpoint(
         system:str=Form(...),
@@ -179,7 +182,6 @@ async def decrypt_audio_enpoint(
         media_type=file.content_type,
         headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
     )
-
 
 
 @app.post("/encrypt/file")
@@ -239,5 +241,116 @@ async def decrypt_file_enpoint(
         headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
     )
 
-# Монтируем статику клиента ПОСЛЕДНИМ, чтобы не перехватывать API-маршруты
+"""
+@app.post("/encrypt/audio")
+async def encrypt_audio_endpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        file: UploadFile = File(...),
+):
+    params_obj = json.loads(params)
+
+    async def chunk_reader():
+        while chunk := await file.read(64 * 1024):
+            yield chunk
+
+    return StreamingResponse(
+        orchestrator.execute_request_stream(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            data_stream=chunk_reader(),
+            process_type="encrypt",
+        ),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": 'attachment; filename="processed.bin"'},
+    )
+
+@app.post("/decrypt/audio")
+async def decrypt_audio_endpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        file: UploadFile = File(...),
+):
+    params_obj = json.loads(params)
+
+    async def chunk_reader():
+        while chunk := await file.read(64 * 1024):
+            yield chunk
+
+    return StreamingResponse(
+        orchestrator.execute_request_stream(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            data_stream=chunk_reader(),
+            process_type="decrypt",
+        ),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": 'attachment; filename="processed.bin"'},
+    )
+
+
+
+
+
+
+
+@app.post("/encrypt/file")
+async def encrypt_file_endpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        file: UploadFile = File(...),
+):
+    params_obj = json.loads(params)
+
+    async def chunk_reader():
+        while chunk := await file.read(64 * 1024):
+            yield chunk
+
+    return StreamingResponse(
+        orchestrator.execute_request_stream(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            data_stream=chunk_reader(),
+            process_type="encrypt",
+        ),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": 'attachment; filename="processed.bin"'},
+    )
+
+@app.post("/decrypt/file")
+async def encrypt_file_endpoint(
+        system: str = Form(...),
+        params: str = Form(...),
+        data_type: str = Form(...),
+        file: UploadFile = File(...),
+):
+    params_obj = json.loads(params)
+
+    async def chunk_reader():
+        while chunk := await file.read(64 * 1024):
+            yield chunk
+
+    return StreamingResponse(
+        orchestrator.execute_request_stream(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            data_stream=chunk_reader(),
+            process_type="decrypt",
+        ),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": 'attachment; filename="processed.bin"'},
+    )
+"""
+
 app.mount("/", StaticFiles(directory=CLIENT_DIR), name="client")

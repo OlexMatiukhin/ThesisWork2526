@@ -98,7 +98,6 @@ class VanDerPolSystemGenerator(IChaosGenerator):
  
 class ForcedPendulumSystemGenerator(IChaosGenerator):
     def __init__(self, params, mode):
-        print(params)
         self.logistic_x= float(params["logisticXForced"])
         self.forced_x = float(params["forcedX"])
         self.forced_y = float(params["forcedY"])
@@ -120,10 +119,7 @@ class TestChaosGenerator(IChaosGenerator):
         C1 = get_logistic_lorenz_sequence(length, 0.2, 1, 1, 1, False)
         return C1
 
-    
-
 class ChaosFactory():
-
     _registry = {
         "lorenz": LorenzSystemGenerator,
         "rossler": RosslerSystemGenerator,

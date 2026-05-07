@@ -6,9 +6,24 @@ export function getActiveParamBlock(){
 }
 
 function showValidationError(input, message) {
-    alert(message);
+    const group = input.closest('.form-group');
+    if (group) {
+        // Видаляємо попередню помилку, якщо є
+        const old = group.querySelector('.param-error');
+        if (old) old.remove();
+
+        const errEl = document.createElement('small');
+        errEl.className = 'param-error';
+        errEl.textContent = message;
+        group.appendChild(errEl);
+    }
+    input.classList.add('input-error');
     input.focus();
-    input.reportValidity();
+}
+
+function clearValidationErrors(block) {
+    block.querySelectorAll('.param-error').forEach(el => el.remove());
+    block.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 }
 function parseNumberInput(input) {
     const raw = (input.value ?? "").trim().replace(",", ".");
@@ -93,6 +108,8 @@ export function validateActiveParams(){
         alert("Немає видимого блоку з параметрами!")
         return {validationPassed: false, paramsObj:null}
     }
+
+    clearValidationErrors(activeBlock);
 
      const logisticInput = [...activeBlock.querySelectorAll("input[type='number']")]
         .find(input => input.name.toLowerCase().startsWith("logistic"));

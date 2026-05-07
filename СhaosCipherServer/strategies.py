@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from io import BytesIO
-from typing import Any
+from typing import Any, Iterator
 import PIL.Image as Image
 from enum import Enum
 
@@ -16,11 +16,28 @@ class ProcessType(Enum):
 
 
 
-
 class ICryptoStrategy(ABC):
     @abstractmethod
-    def process(self, data: any, generator:any, process_type:str,mode:str = None) -> Any:
+    def process(self, data: any, generator: any, process_type: str, mode: str = None) -> Any:
+        """Batch-обработка (обратная совместимость)."""
         pass
+    
+    def process_stream(
+        self,
+        data_stream: Iterator[bytes],
+        generator: any,
+        process_type: str,
+        mode: str = None,
+    ) -> Iterator[bytes]:
+        # Собираем всё в память (для тех, кто не поддерживает стрим)
+        full_data = b"".join(data_stream)
+        result = self.process(full_data, generator, process_type, mode)
+        yield result
+    
+    @property
+    def supports_streaming(self) -> bool:
+        return False
+
 class TextCryptor(ICryptoStrategy):
     def process(self, data: any, generator: any, process_type: str, mode:str) -> Any:
         if process_type == ProcessType.ENCRYPT.value:
@@ -37,6 +54,7 @@ class ImageCryptor(ICryptoStrategy):
             return decrypt_image(data, generator)
         else:
             raise ValueError(f"Invalid process type: {process_type}")
+
 class AudioCryptor(ICryptoStrategy):
     def process(self, data: any, generator: any, process_type: str, mode) -> Any:
         if process_type == ProcessType.ENCRYPT.value:
@@ -45,6 +63,16 @@ class AudioCryptor(ICryptoStrategy):
             return decrypt_auido(data, generator)
         else:
             raise ValueError(f"Invalid process type: {process_type}")
+    """def process_stream(self, data_stream: Iterator[bytes], generator: any, process_type: str, mode: str = None) -> Iterator[bytes]:
+        if process_type == ProcessType.ENCRYPT.value:
+            return encrypt_audio_stream(data_stream, generator)
+        elif process_type == ProcessType.DECRYPT.value:
+            return decrypt_audio_stream(data_stream, generator)
+        else:
+            raise ValueError(f"Invalid process type: {process_type}" )
+    @property
+    def supports_streaming(self) -> bool:
+        return True"""
 class FileCryptor(ICryptoStrategy):
     def process(self, data: any, generator:any, process_type:str, mode) -> Any:
         if process_type == ProcessType.ENCRYPT.value:
@@ -53,3 +81,15 @@ class FileCryptor(ICryptoStrategy):
             return decrypt_file(data, generator)
         else:
             raise ValueError(f"Invalid process type: {process_type}")
+    """def process_stream(self, data_stream: Iterator[bytes], generator: any, process_type: str, mode: str = None) -> Iterator[bytes]:
+        if process_type == ProcessType.ENCRYPT.value:
+            return encrypt_file_stream(data_stream, generator)
+        elif process_type == ProcessType.DECRYPT.value:
+            return decrypt_file_stream(data_stream, generator)
+        else:
+            raise ValueError(f"Invalid process type: {process_type}")
+
+    @property
+    def supports_streaming(self) -> bool:
+        return True"""
+        

@@ -1,14 +1,5 @@
-export function blockUnblockHeaderElements(block){
-              const headerSelects = document.querySelectorAll('header select');
-             headerSelects.forEach(el =>{
-                if(block){
-                    el.disabled=true;
-                }
-                else{
-                    el.disabled=false;
-                }
-
-             })
-
-        
-}
+export function blockUnblockHeaderElements(block) {
+    document.querySelectorAll('header select').forEach(el => {
+        el.disabled = block;
+    });
+}

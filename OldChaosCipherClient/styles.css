@@ -1,0 +1,1066 @@
+*{ box-sizing: border-box; }
+
+
+body{
+    margin: 0;
+    background-image: linear-gradient(to bottom right, #172554 0%, #083344 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 40px 45px;
+    border-bottom: 1px solid transparent;
+    min-width: 365px;    
+}
+
+/* ------------------------------------------- HEADER ---------------------------------------------------------- */
+header {
+    background-color: #1E50DA;
+    width: 100%;
+    height: calc(90px + (40 * ((100vw - 768px) / 1152)));
+    border-radius: 25px;    
+    display: flex;
+    align-items: center;
+    position: relative; 
+    z-index: 100;
+    /* Формула для регулування відступів */
+    /* Діапазон регулювання 1152 (1920 - 768) */
+    /*Формула зменьшення padding
+       30px — макс розмір
+       10px — мін розмір
+       30 — різниця
+       1152 — диапазон ширины экрана (1920 - 768)*/    
+    padding: 0 calc(10px + (20 * ((100vw - 768px) / 1152)));
+    gap: calc(10px + (30 * ((100vw - 768px) / 1152)));
+}
+
+/* --- LOGO --- */
+.logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; 
+    gap: 10px;
+}
+
+.logo img {
+    display: block;
+    height: auto;
+    /*Формула зменьшення логотиму
+       82px — макс розмір
+       40px — мін розмір
+       42 — різниця
+       1152 — диапазон ширины экрана (1920 - 768)*/
+    width: calc(40px + (42 * ((100vw - 768px) / 1152)));
+}
+
+.logo span {
+    font-weight: bold;
+    font-style: italic;
+    color: #FFF;
+    white-space: nowrap;
+    /*Формула зменьшення розміру шрифту*/
+    font-size: calc(18px + (27 * ((100vw - 768px) / 1152)));
+}
+
+/* --- MENU (DESKTOP) --- */
+.menu {
+    display: flex;
+    flex-grow: 1; 
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap; 
+}
+
+/* --- SELECTS (DESKTOP) --- */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-family: inherit;
+    color: #fff;
+    /*text-align: center;*/
+    cursor: pointer;    
+    flex-grow: 1;
+    min-width: 0; 
+    width: auto;    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  
+    font-size: calc(14px + (26 * ((100vw - 768px) / 1152)));
+}
+
+option {
+    background-color: #1E50DA;
+    color: white;
+}
+
+
+/* Обмеження зростання на великих екрана (>1920px) */
+@media (min-width: 1920px) {
+    select { font-size: 40px; }
+    .logo img { width: 82px; } 
+    .logo span { font-size: 45px; } 
+    header { 
+        gap: 40px; 
+        padding: 0 30px; 
+    }
+}
+
+option {
+    background-color: #1E50DA;
+    color: white;
+}
+
+/* --- BURGER BUTTON (Приховано на пк) --- */
+.burger-btn {
+    display: none; /* Приховано за замовчуванням */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+}
+
+.burger-btn span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+
+/* --- MOBILE VERSION (Tablet & Phone) --- */
+@media (max-width: 768px) {    
+    /* Відображаємо бургер */
+    .burger-btn {
+        display: flex; 
+        margin-left: auto; /* Прижимаем вправо */
+        padding-right: 3px;
+    }
+
+    /* Налаштовуємо ЛОГОТИП */
+    .logo img {
+        width: 50px; /* Фиксированный крупный размер */
+        margin: 0 3px;
+    }
+    .logo span {
+        font-size: 24px; /* Фіксований шрифт */
+    }
+
+    /* Перетворюємо меню на випадний список*/
+    .menu {
+        display: none; /* Приховане, поки не натиснуть бургер */        
+        position: absolute;
+        top: calc(91px + (40 * ((100vw - 768px) / 1152))); 
+        left: 0;
+        width: 100%;        
+        /* Стилі вертикального списку */
+        background-color: #1E50DA; 
+        border-radius: 25px;
+        padding: 20px;
+        flex-direction: column; 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        z-index: 999;
+    }
+
+    /* Клас для js, який він додає при відкритті меню */
+    .menu.open {
+        display: flex;
+    }
+
+    /* Стилі select */
+    select {
+        width: 100%;
+        font-size: 18px; 
+        padding: 15px;
+        padding-left: 0;
+        /* Розділення тегів у списку */
+        border-bottom: 1px solid rgba(255,255,255, 0.2); 
+        text-align: left;              
+        /*Вимкнення обрізання */
+        white-space: normal; 
+        text-overflow: clip;
+    }
+    option{
+        font-size: 18px;
+    }
+    
+    select:last-child {
+        border-bottom: none;
+    }   
+}
+/* ------------------------------------------------------------- SECTION PARAMETERS-------------------------------------------------------------------------------------------------------------- --- */
+.parameters{       
+    min-height: calc(150px + (45 * ((100vw - 768px) / 1152)));
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    margin: 30px auto 15px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+}
+
+.parameters h2{
+    margin: 0;
+    /*margin-left: 37px;*/
+    margin-bottom: 14px;
+    font-size: 24px;
+    color: #4A5668;
+}
+
+.parameters form{
+    display: flex;
+    flex-direction: row;
+    /*margin-left: 37px;*/
+    /*Формула зменьшення відступів між input для параметрів*/
+    gap: calc(30px + (45 * ((100vw - 768px) / 1152)));
+}
+
+
+.form-group{
+    display: flex;
+    flex-direction: column;    
+    flex-shrink: 0;
+}
+
+.parameters label{   
+   font-size: calc(16px + (9 * ((100vw - 768px) / 1152)));
+    font-weight: 600;
+    color: #555E6B;
+    margin-bottom: 5px;
+    margin-left: 3px;
+}
+
+.parameters input{
+    border-width: 4px;
+    border-radius: 2px;
+    outline: none;
+    border-style: solid;
+    border-color: #E7E7E9;
+    width: calc(70px + (200 * ((100vw - 768px) / 1152)));
+    min-width: 70px;
+    height: 40px;   
+    margin-bottom: 14px;
+
+}
+
+.parameters.hidden {
+    display: none;
+}
+
+/* --- MOBILE VERSION (Tablet & Phone) --- */
+@media (max-width: 768px) {
+    
+    /*Адптивність форм з параметрами*/
+    .parameters form{
+        flex-wrap: wrap;
+      
+    }
+    .parameters input{  
+        width: calc(70px + (200 * ((100vw - 350px) / 418)));
+        min-width: 70px;
+   
+    }
+ 
+    
+}
+
+
+
+/* -----------------------------------------------SECTION ENCRYPT TEXT-------------------------------------------------------------------------------------------------------------- --- */
+#encrypt-text{
+    display: none;
+}
+
+#encrypt-text h2{
+    font-size: 24px;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 14px;
+    color: #374151;   
+}
+
+.text-wrapper{
+    min-height: calc(150px + (45 * ((100vw - 768px) / 1152)));    
+    display: flex;
+    min-width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1vw;
+}
+
+.original-text, .processed-text { 
+    min-height: 242px;
+    min-width: 445px;
+    max-height: 414px;
+    max-width: 900px;
+    color: #374151;
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+    /*padding-bottom: calc(60px + (26 * ((100vw - 768px) / 1152)));*/
+    width: 49%;
+    margin: 15px 0px; 
+}
+
+.original-text-content, .processed-text-content{
+    width: 100%;
+    /*height: 305px;*/
+    height: 247px;
+    border-radius: 2px;
+    outline: none;
+    border-style: solid;
+    border-color: #E7E7E9;
+    resize: none;
+}
+
+.buttons-wrapper-text{
+    display: flex;
+    flex-direction: row;
+    gap: 1.9vw;
+    justify-content: center;
+    /* padding-bottom: 30px;*/
+    padding-bottom: 15px;
+}
+.buttons-wrapper-text button{  
+    height: 49px;
+    width: 230px;
+    border-radius: 14px;
+    outline: none;  
+    border: none;
+    background: linear-gradient(180deg, #2462EA 0%, #1D4FD9 100%);
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+
+
+}
+.buttons-wrapper-text button:active{
+    background-color:#0a2f96 ;
+}
+@media (max-width: 1000px) {
+    .original-text, .processed-text{ 
+        min-width: 232px;
+        width: 100%;
+    }
+   
+    
+}
+
+
+/*Loader and error bar*/
+
+#encrypt-text .encrypt-error {
+    font-size: 12px;
+    color: #000000;
+    background: #ba1616a3;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+    display:none;
+}
+
+#encrypt-text .encrypt-progress{
+    display: none;
+    position: relative;
+    height: 31px;
+    background: rgb(191, 191, 191);
+    border-radius: 15px;
+    overflow: hidden;
+    
+
+}
+
+#encrypt-text .encrypt-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgb(12 62 235 / 95%);
+    border-radius: 15px;
+    transition: width .14s linear;
+}
+
+#encrypt-text .encrypt-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(8, 48, 70, .88);
+    pointer-events: none;
+}
+
+
+
+
+/*-----------------------------------------------SECTION ENCRYPT IMAGE-------------------------------------------------------------------------------------------------------------- --- */
+
+#encrypt-image{  
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 1vw;
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+}
+
+#encrypt-image h2{
+    display: block;
+    font-size: calc(9px + (15 * ((100vw - 768px) / 1152)));
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 14px;
+    max-height: 10%;
+    overflow: hidden;
+    color: #374151; 
+    margin: 3px auto; 
+    display: inline-block;
+    position: relative;
+    top: 1%;
+}
+
+.original-image, .processed-image { 
+    max-height: 360px;    
+    max-width: 610px;
+    background-color: #ccc;
+    width: 32%;
+    aspect-ratio: 16 / 9;
+}
+
+.original-image-content, .processed-image-content{
+    display: block;
+    width: 85%;
+    height: 85%;
+    margin: 0 auto;
+    outline: none;
+    margin-bottom: 4%;
+}
+.processed-image-content{
+    display: none;
+}
+
+/*Progress and error bars*/
+
+#encrypt-image .encrypt-error {
+    display: none;
+    font-size: 12px;
+    width: 100%;
+    color: #000000;
+    background: #ba1616a3;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+#encrypt-image .encrypt-progress{
+    display: none;
+    position: relative;
+    height: 31px;
+    background: rgb(191, 191, 191);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+    
+
+}
+
+#encrypt-image .encrypt-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgb(12 62 235 / 95%);
+    border-radius: 15px;
+    transition: width .14s linear;
+}
+
+#encrypt-image .encrypt-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(8, 48, 70, .88);
+    pointer-events: none;
+}
+
+
+
+.buttons-wrapper-image{
+    max-height: 360px;    
+    max-width: 610px;
+    width: 32%;
+    aspect-ratio: 16 / 9;
+    min-width: 225px;
+    background-color: #cccccc40;
+    border: 2px #ccc solid;
+    display: flex;
+    
+}
+
+.buttons-wrapper-image div{ 
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18%;
+    padding: 0;
+    position: relative;
+    left: 10%;
+}
+
+.buttons-wrapper-image div:last-child{ 
+    padding: 0;
+    position: relative;
+    left: unset;
+    right: 10%;
+}
+
+.buttons-wrapper-image div:first-child button{ 
+    background: linear-gradient(180deg, #2462EA 0%, #1D4FD9 100%);
+    border-radius: 4px;
+    padding: 3px;
+    color: #fff;
+    font-weight: bold;
+    font-size: calc(11px + (6 * ((100vw - 768px) / 1152)));
+    width: 30%;
+}
+
+.buttons-wrapper-image button{
+    display: block;  
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+    width: 30%;
+    aspect-ratio: 1 / 1;
+    max-width: 65px;
+    opacity: 0.9;
+
+}
+
+.buttons-wrapper-image .download-btn, .remove-btn{  
+    background: none;    
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+}
+
+.download-btn img, .remove-btn img {
+    width: 100%;
+    height: 100%; 
+    display: block;
+}
+
+@media (max-width: 826px) {
+    .original-image, .processed-image, .buttons-wrapper-image{
+        min-width: 232px;
+        max-width: none;
+        width: 100%;
+    }
+    #encrypt-image h2{
+        font-size: calc(10px + (14 * ((100vw - 365px) / 461)));
+    }
+
+    .buttons-wrapper-image div:first-child button{     
+        font-size: calc(11px + (6 * ((100vw - 365px) / 461)));
+    }
+    #encrypt-image{
+        gap: 2.5vw;
+    }
+}
+
+/*-----------------------------------------------SECTION ENCRYPT FILE-------------------------------------------------------------------------------------------------------------- --- */
+#encrypt-file{  
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 1vw;
+    display: none;
+    margin-top: 30px;
+}
+
+#encrypt-file h2{
+    display: block;
+    font-size: calc(9px + (15 * ((100vw - 768px) / 1152)));
+    margin: 0px;
+    padding: 0px;
+    width: 37%;
+    max-height: 10%;
+    overflow: hidden;
+    color: #374151;  
+    position: relative;
+    top: 1%;
+    display: inline-block;
+}
+
+.original-file, .processed-file {  
+    max-height: 360px;    
+    max-width: 610px;
+    background-color: #ccc;
+    width: 32%;
+    aspect-ratio: 16 / 9;
+    text-align: center;
+}
+
+.original-file a, .processed-file a { 
+    display: block;
+    font-size: calc(9px + (15 * ((100vw - 768px) / 1152)));
+    margin: 0px;
+    padding: 0px;
+    max-height: 10%;
+    overflow: hidden;
+    color: #374151; 
+    margin: 0 auto; 
+    margin-bottom: 1.5%;
+    color: #0D4FD9;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.original-file-icon, .processed-file-icon{   
+    display: block;
+    width: 37%;
+    height: 76%;
+    margin: 0 auto;
+    outline: none;
+    margin-bottom: 2%;
+    margin-top: 2%;       
+}
+
+.buttons-wrapper-file{
+    display: inline;
+    max-height: 360px;    
+    max-width: 610px;
+    width: 32%;
+    aspect-ratio: 16 / 9;
+    min-width: 225px;
+    background-color: #cccccc40;
+    border: 2px #ccc solid;
+    display: flex;    
+}
+
+.buttons-wrapper-file div{ 
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18%;
+    padding: 0;
+    position: relative;
+    left: 10%;   
+}
+
+.buttons-wrapper-file div:last-child{ 
+    padding: 0;
+    position: relative;
+    left: unset;
+    right: 10%;
+}
+
+
+/*Progress and error bars*/
+#encrypt-file .encrypt-error {
+    display: none;
+    font-size: 12px;
+    width: 100%;
+    color: #000000;
+    background: #ba1616a3;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+#encrypt-file .encrypt-progress{
+    display: none;
+    position: relative;
+    height: 31px;
+    background: rgb(191, 191, 191);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+    
+
+}
+
+#encrypt-file .encrypt-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgb(12 62 235 / 95%);
+    border-radius: 15px;
+    transition: width .14s linear;
+}
+
+#encrypt-file .encrypt-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(8, 48, 70, .88);
+    pointer-events: none;
+}
+
+
+.buttons-wrapper-file div:first-child button{ 
+    background: linear-gradient(180deg, #2462EA 0%, #1D4FD9 100%);
+    border-radius: 4px;
+    padding: 3px;
+    color: #fff;
+    font-weight: bold;
+    font-size: calc(11px + (6 * ((100vw - 768px) / 1152)));
+    width: 30%;
+}
+
+.buttons-wrapper-file button{
+    display: block;  
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+    width: 30%;
+    aspect-ratio: 1 / 1;
+    max-width: 65px;
+    opacity: 0.9;
+}
+
+.buttons-wrapper-file .download-btn, .remove-btn{  
+    background: none;    
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+}
+
+.download-btn img, .remove-btn img {
+    width: 100%;
+    height: 100%; 
+    display: block;
+}
+
+@media (max-width: 826px) {
+    .original-file, .processed-file, .buttons-wrapper-file{
+        min-width: 232px;
+        max-width: none;
+        width: 100%;
+    }
+
+    #encrypt-file h2,  #encrypt-file a{
+        font-size: calc(10px + (14 * ((100vw - 365px) / 461)));
+    }
+
+    .buttons-wrapper-file div:first-child button{     
+        font-size: calc(11px + (6 * ((100vw - 365px) / 461)));
+    }
+    #encrypt-file{
+        gap: 2.5vw;
+    }
+}
+
+/*-----------------------------------------------SECTION ENCRYPT AUDIO-------------------------------------------------------------------------------------------------------------- --- */
+
+#encrypt-audio{  
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 1.5vw;
+    margin-top: 30px;
+    display: none;
+}
+
+#encrypt-audio h2{
+    display: block;
+    font-size: calc(9px + (15 * ((100vw - 768px) / 1152)));
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #374151; 
+    margin: 0 auto;      
+    margin-bottom: 1%;
+}
+
+.audio-wrapper {  
+    max-height: 360px;
+    max-width: 1220px;
+    background-color: #ccc;
+    width: 64%;
+    aspect-ratio: 32 / 9;
+}
+
+.original-audio-wrapper, .processed-audio-wrapper{
+    padding: 2%;
+    height: 40%;  
+}
+
+.original-audio-content, .processed-audio-content {
+    height:  calc(20px + (34 * ((100vw - 768px) / 1152)));
+    width: 100%;
+}
+
+
+/*Progress and error bars*/
+
+#encrypt-audio .encrypt-error {
+    display: none;
+    font-size: 12px;
+    width: 100%;
+    color: #000000;
+    background: #ba1616a3;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+#encrypt-audio .encrypt-progress{
+    display: none;
+    position: relative;
+    height: 31px;
+    background: rgb(191, 191, 191);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+    
+
+}
+
+#encrypt-audio .encrypt-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgb(12 62 235 / 95%);
+    border-radius: 15px;
+    transition: width .14s linear;
+}
+
+#encrypt-audio .encrypt-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(8, 48, 70, .88);
+    pointer-events: none;
+}
+
+
+
+.buttons-wrapper-audio{
+    display: inline;
+    max-height: 360px;    
+    max-width: 610px;
+    width: 32%;
+    aspect-ratio: 16 / 9;
+    min-width: 225px;
+    background-color: #cccccc40;
+    border: 2px #ccc solid;
+    display: flex;    
+}
+
+.buttons-wrapper-audio div{ 
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18%;
+    padding: 0;
+    position: relative;
+    left: 10%;   
+}
+
+.buttons-wrapper-audio div:last-child{ 
+    padding: 0;
+    position: relative;
+    left: unset;
+    right: 10%;
+}
+
+
+.buttons-wrapper-audio div:first-child button{ 
+    background: linear-gradient(180deg, #2462EA 0%, #1D4FD9 100%);
+    border-radius: 4px;
+    padding: 3px;
+    color: #fff;
+    font-weight: bold;
+    font-size: calc(11px + (6 * ((100vw - 768px) / 1152)));
+    width: 30%;
+}
+
+.buttons-wrapper-audio button{
+    display: block;  
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+    width: 30%;
+    aspect-ratio: 1 / 1;
+    max-width: 65px;
+    opacity: 0.9;
+}
+
+.buttons-wrapper-audio .download-btn, .remove-btn{  
+    background: none;    
+    border: none;        
+    padding: 0;         
+    cursor: pointer;  
+}
+
+.download-btn img, .remove-btn img {
+    width: 100%;
+    height: 100%; 
+    display: block;
+}
+
+@media (max-width: 826px) {
+    .audio-wrapper,  .buttons-wrapper-audio{
+        min-width: 232px;
+        max-width: none;
+        width: 100%;
+    }
+
+    #encrypt-audio h2{
+        font-size: calc(10px + (14 * ((100vw - 365px) / 461)));
+    }
+
+    .buttons-wrapper-file div:first-child button{     
+        font-size: calc(11px + (6 * ((100vw - 365px) / 461)));
+    }
+
+    .original-audio-content, .processed-audio-content 
+    {
+        height:  calc(30px + (24 * ((100vw - 365px) / 1152)));
+        width: 100%;
+    }
+
+    .audio-wrapper{
+        aspect-ratio: 16 / 9;
+    }
+}
+
+
+/*-----------------------------------------------DROP ZONE-------------------------------------------------------------------------------------------------------------- --- */
+
+#drop-zone{  
+    background-color: #F3F3F5;
+    border-radius: 14px;
+    padding: calc(20px + (17 * ((100vw - 768px) / 1152)));
+    padding-top: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 1.5vw;
+    margin-top: 30px;
+    width: 100%;
+    min-width: 232px;
+    height: 350px;
+    position: relative;      
+}
+
+.dropzone-inner{
+    height: 100%;
+    background-color: #fff;    
+    border: #E7E7E9 4px solid;
+    background-image: url('images/Download.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto; 
+    background-size: 8vw auto;
+    width: 100%;
+}
+
+.dz-title{
+    position: absolute;
+    top: 65px;
+    font-weight: bold;
+    color: #4A5668;
+    width: 70%;
+    font-size: calc(14px + (5 * ((100vw - 768px) / 1152)));
+    
+}
+#drop-zone .dz-clear{
+    position: absolute;
+    right: 28px;
+    top: 42px;
+    max-width: 44px;
+    border: none;
+    opacity: 0.9;
+}
+
+.dz-clear img{
+    width: 100%;
+    height: 100%; 
+    display: block;
+}
+
+.dz-error {
+    margin-top: 172px;
+    font-size: 12px;
+    color: #000000;
+    background: #ba1616a3;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-left: 1%;
+    margin-right: 1%;
+    text-align: center;
+    display:none;
+}
+
+.dz-progress{
+    display: none;
+    position: relative;
+    margin-top: 172px;
+    height: 31px;
+    background: rgb(127 125 125 / 49%);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-right: 1%;
+    margin-left: 1%;
+}
+
+.dz-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgb(12 62 235 / 95%);
+    border-radius: 15px;
+    transition: width .14s linear;
+}
+
+.dz-progress-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(8, 48, 70, .88);
+    pointer-events: none;
+}
+
+/* -----------------------------------------------SECTIONS OPERATION-------------------------------------------------------------------------------------------------------------- --- */
