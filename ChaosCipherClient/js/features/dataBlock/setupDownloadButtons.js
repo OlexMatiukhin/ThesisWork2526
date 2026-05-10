@@ -47,14 +47,14 @@ function downloadFromMediaSrc(mediaEl, fileName) {
         return;
     }
 
-    /*if (mediaEl.tagName.toLowerCase() === "audio" && (!mediaEl.currentSrc || mediaEl.currentSrc=="")) {
+    if (mediaEl.tagName.toLowerCase() === "audio" && (!mediaEl.currentSrc || mediaEl.currentSrc=="")) {
         alert("Немає аудіо для завантаження");
         return;
-    }*/
-    /*if (mediaEl.tagName.toLowerCase() === "img" && mediaEl.style.display === "none") {
+    }
+    if (mediaEl.tagName.toLowerCase() === "img" && mediaEl.style.display === "none") {
         alert("Немає зображення для завантаження");
         return;
-    }*/         
+    }        
 
         
     const src = mediaEl.currentSrc || mediaEl.getAttribute("src") || "";

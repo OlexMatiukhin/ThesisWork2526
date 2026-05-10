@@ -58,8 +58,6 @@ def get_logistic_chua_sequence(L:int, logistic_x:float, chua_x:float, chua_y:flo
             raise ValueError("logisticX must be in (0,1)")
         x,y,z = chua_generator(x, y, z)
         result = w0 + x + y + z
-        if not all(math.isfinite(v) for v in (x, y, z, result)):
-            raise ValueError(f"Non-finite value at iteration {i}: x={x}, y={y}, z={z}, result={result}")
         delta = eps * (1-w0)
         if w0 < T1:
             x -= delta

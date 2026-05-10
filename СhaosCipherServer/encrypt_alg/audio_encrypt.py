@@ -9,35 +9,35 @@ import struct
 
 def split_wav(wav_bytes: bytes) -> tuple[bytes, bytes]:
     """
-    Разделяет WAV-файл на заголовок (всё до блока data)
-    и сами аудиоданные (содержимое блока data).
+    Розділяє WAV-файл на заголовок (все до блоку data)
+    та самі аудіодані
     """
-    i = 12  # пропускаем 'RIFF' (4) + размер (4) + 'WAVE' (4)
+    i = 12
     while i < len(wav_bytes) - 8:
         chunk_id = wav_bytes[i:i+4]
         chunk_size = struct.unpack_from('<I', wav_bytes, i + 4)[0]
         if chunk_id == b'data':
-            header = wav_bytes[:i + 8]       # всё включая 'data' + размер
+            header = wav_bytes[:i + 8]
             audio_data = wav_bytes[i + 8: i + 8 + chunk_size]
             return header, audio_data
         i += 8 + chunk_size
-    raise ValueError("WAV: блок 'data' не найден")
+    raise ValueError("WAV: блок 'data' не знайдено")
 
 
 def build_wav(header: bytes, audio_data: bytes) -> bytes:
     """
-    Собирает WAV обратно, обновляя размеры в заголовке.
+    Збирає WAV назад, оновлюючи розміри заголовку.
     """
     data_size = len(audio_data)
-    riff_size = len(header) - 8 + data_size  # минус 'RIFF' и размер самого поля
+    riff_size = len(header) - 8 + data_size  # мінус 'RIFF' і розмір самого поля
 
     result = bytearray(header + audio_data)
-    # Обновляем поле размера RIFF (байты 4–7)
+    # Оновлюєм поле розміру RIFF (байти 4–7)
     struct.pack_into('<I', result, 4, riff_size)
-    # Обновляем размер блока data (последние 4 байта заголовка)
+    # Оновлюєм розмір блока data (останні 4 байта заголовку)
     struct.pack_into('<I', result, len(header) - 4, data_size)
     return bytes(result)
-# Загружаем файл
+
 
 def xor_elements(raw,cipher_sequence):
     result = (np.frombuffer(raw, dtype=np.uint8) ^ np.frombuffer(cipher_sequence, dtype=np.uint8)).tobytes()

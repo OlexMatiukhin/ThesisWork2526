@@ -1,10 +1,6 @@
-    export function detectKind (file){
-        const type = (file.type || "").toLowerCase();
-        //#if (type.startsWith("image/")) return "image";
-        //if (type.startsWith("audio/")) return "audio";
-        const name = file.name.toLowerCase() || "";
-        //if (name.match(/\.(png|jpeg|gif|bmp|webp|svg|tiff?)$/)) return 'image'
-        if (name.match(/\.(png?)$/)) return 'image'
-        if (name.match(/\.(wav?)$/)) return 'audio'
-        return "other"
-    }
+export function detectKind(file) {
+    const name = (file.name || "").toLowerCase();
+    if (/\.(png)$/.test(name)) return "image";
+    if (/\.(wav)$/.test(name)) return "audio";
+    return "other";
+}

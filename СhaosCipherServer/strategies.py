@@ -81,6 +81,7 @@ class FileCryptor(ICryptoStrategy):
             return decrypt_file(data, generator)
         else:
             raise ValueError(f"Invalid process type: {process_type}")
+
     """def process_stream(self, data_stream: Iterator[bytes], generator: any, process_type: str, mode: str = None) -> Iterator[bytes]:
         if process_type == ProcessType.ENCRYPT.value:
             return encrypt_file_stream(data_stream, generator)

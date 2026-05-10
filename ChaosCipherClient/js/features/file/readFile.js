@@ -1,7 +1,7 @@
 import { MAX_BYTES } from "../../config.js";
 import { revokeObjectUrl } from "../dropzone/revokeObjectUrl.js";
 import { setError, setProgressBar } from "../dropzone/setProgAndErrDrZone.js";
-import { blockUnblockHeaderElements } from "../header/headerBlock.js";
+import { shouldDisableHeaderElements } from "../header/headerBlock.js";
 import { setProgressBarInDataBlock, setErrorInDataBlock } from "../dataBlock/setProgressAndErrorBlock.js";
 import { populatePreview } from "../dataBlock/populatePreview.js";
 import { cancelUpload } from "../dataBlock/cancelUpload.js";
@@ -48,9 +48,7 @@ export function bindProcessedFile(file, ext = null) {
 
     const operationBlocks = document.querySelectorAll(".operation");
     operationBlocks.forEach(el => {
-        if (el.style.display !== "flex") return;
-
-        // Звільняємо попередній URL
+        if (window.getComputedStyle(el).display !== "flex") return;
         if (el.__objectUrl) {
             URL.revokeObjectURL(el.__objectUrl);
             el.__objectUrl = null;
@@ -110,7 +108,7 @@ export function readFile(zone, file) {
         setError(zone, "Файл занадто великий за розміром!", true);
         return
     }
-    blockUnblockHeaderElements(true);
+    shouldDisableHeaderElements(true);
     revokeObjectUrl(zone)
     zone.selectedFile = file
 
@@ -135,13 +133,13 @@ export function readFile(zone, file) {
     reader.onabort = (e) => {
         setProgressBar(zone, 0, false)
         setError(zone, "Читання файлу скасовано", true);
-        blockUnblockHeaderElements(false);
+        shouldDisableHeaderElements(false);
 
     }
     reader.onerror = (e) => {
         setProgressBar(zone, 0, false)
         setError(zone, "Помилка при читанні", true);
-        blockUnblockHeaderElements(false);
+        shouldDisableHeaderElements(false);
     }
     reader.readAsArrayBuffer(file);
 }

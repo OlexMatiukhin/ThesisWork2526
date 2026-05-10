@@ -61,7 +61,7 @@
             <form class="tab-form" action="#" method="post" data-tab-form="">
                 <div class="form-group">
                     <label for="logisticXLorenz">Logistic X</label>
-                    <input name="logisticXLorenz" id="logisticXLorenz" value="" type="number" required max="1">
+                    <input name="logisticXLorenz" id="logisticXLorenz" value="" type="number" >
                     <small class="param-hint">від 0 до 1</small>
                 </div>
                 <div class="form-group">
@@ -79,6 +79,7 @@
                     <input name="lorenzZ" id="lorenzZ" type="number">
                     <small class="param-hint">від 0 до 60</small>
                 </div>
+                
             </form>
         </section>
         <section class="parameters" id="rossler-params">
@@ -224,7 +225,7 @@
                         </div>
                         <div class="text-head-actions">
                             <button class="text-icon-btn" data-action="copy" data-target="original-text-content"
-                                data-tip="Копіювати">
+                                >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -232,7 +233,7 @@
                                 </svg>
                             </button>
                             <button class="text-icon-btn del" data-action="clear" data-target="original-text-content"
-                                data-counter="in-char-count" data-tip="Очистити">
+                                data-counter="in-char-count" >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="3 6 5 6 21 6" />
@@ -269,8 +270,7 @@
                             <span class="text-badge badge-out">Output</span>
                         </div>
                         <div class="text-head-actions">
-                            <button class="text-icon-btn" data-action="copy" data-target="processed-text-content"
-                                data-tip="Копіювати">
+                            <button class="text-icon-btn" data-action="copy" data-target="processed-text-content">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -278,7 +278,7 @@
                                 </svg>
                             </button>
                             <button class="text-icon-btn del" data-action="clear" data-target="processed-text-content"
-                                data-counter="out-char-count" data-tip="Очистити">
+                                data-counter="out-char-count">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="3 6 5 6 21 6" />
@@ -298,8 +298,21 @@
             </div>
 
             <div class="buttons-wrapper-text">
-                <button class="encrypt-text-btn">Encrypt</button>
-                <button class="decrypt-text-btn">Decrypt</button>
+                <button class="encrypt-text-btn">
+                    <svg viewBox="0 0 24 26" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+
+                    Encrypt</button>
+                <button class="decrypt-text-btn">
+                      <svg viewBox="0 0 24 26" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                        </svg>
+                    Decrypt</button>
             </div>
 
             <div class="encrypt-error" role="alert" aria-live="assertive">Помилка при завантаженні</div>
@@ -386,7 +399,7 @@
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>
                             </div>
-                            <div class="file-pending-text">Файл з'явиться<br>після шифрування</div>
+                            <div class="file-pending-text">Файл з'явиться<br>після обробки</div>
                         </div>
                         <!-- Стан: готово -->
                         <div id="result-ready" style="display:none;flex-direction:column;align-items:center;gap:10px;">
@@ -507,7 +520,7 @@
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                     </svg>
                                 </div>
-                                <div class="file-pending-text">Зображення з'явиться<br>після шифрування</div>
+                                <div class="file-pending-text">Зображення з'явиться<br>після обробки</div>
                             </div>
                         </div>
                     </div>
@@ -607,7 +620,7 @@
                                     </svg>
                                 </div>
                                 <span class="file-pending-text">
-                                    Аудіо з'явиться після шифрування
+                                    Аудіо з'явиться після обробки
                                 </span>
                             </div>
                             <!-- Player (прихований до шифрування) -->

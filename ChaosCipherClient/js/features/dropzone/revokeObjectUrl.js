@@ -1,6 +1,6 @@
 export function revokeObjectUrl (zone){
-        if (zone.__objectUrl){
-            try{URL.revokeObjectURL(zone.__objectUrl);} catch{}
-        }
-        zone.__objectUrl=null;
+    if (zone.__objectUrl){
+        URL.revokeObjectURL(zone.__objectUrl);
+    }
+    zone.__objectUrl=null;
 }

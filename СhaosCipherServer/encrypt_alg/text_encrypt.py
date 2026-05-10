@@ -79,35 +79,42 @@ def encrypt_text_chars(content, gen):
         result += result_i.to_bytes(B, "big")
     return base64.b64encode(result).decode("ascii")
 def decrypt_text_chars(cipher_b64: str, gen):
-    N = 0x110000
-    B = bytes_per_value(N)
-    raw = base64.b64decode(cipher_b64)
-    n = len(raw) //B
-    result = ""
-    generated_sequence = gen.get_sequence(length=2*n)
-    #N = 1114112
-    generated_sequence_norm=[]
-    for i in range(0, len(generated_sequence), 2):
-        normalazied_a_i = normalize_odd(generated_sequence[i], N)
-        normalazied_b_i = normalize(generated_sequence[i + 1], N)
-        generated_sequence_norm.append(normalazied_a_i)
-        generated_sequence_norm.append(normalazied_b_i)
+    try:
+        N = 0x110000
+        B = bytes_per_value(N)
+        raw = base64.b64decode(cipher_b64)
+        n = len(raw) //B
+        result = ""
+        generated_sequence = gen.get_sequence(length=2*n)
+        #N = 1114112
+        generated_sequence_norm=[]
+        for i in range(0, len(generated_sequence), 2):
+            normalazied_a_i = normalize_odd(generated_sequence[i], N)
+            normalazied_b_i = normalize(generated_sequence[i + 1], N)
+            generated_sequence_norm.append(normalazied_a_i)
+            generated_sequence_norm.append(normalazied_b_i)
 
-    for i in range(n):
-        gererated_index = i + i
-        generated_a= generated_sequence_norm[gererated_index]
-        generated_b=generated_sequence_norm[gererated_index+1]
-        elment_i= int.from_bytes(raw[B*i: B*i+B], "big")
-        result_i = transform_ch_back(elment_i, generated_a, generated_b, N)
-        result += chr(int(result_i))
-    return result
+        for i in range(n):
+            gererated_index = i + i
+            generated_a= generated_sequence_norm[gererated_index]
+            generated_b=generated_sequence_norm[gererated_index+1]
+            elment_i= int.from_bytes(raw[B*i: B*i+B], "big")
+            result_i = transform_ch_back(elment_i, generated_a, generated_b, N)
+            result += chr(int(result_i))
+        return result
+    except Exception as e:
+        raise RuntimeError(f"Помилка дешуфрування тексту. Неправильно введені параметри або формат даних.: {e}") from e
 def encrypt_text(content, gen, mode):
+    if len(content) == 0:
+        raise ValueError("Помилка шифрування! В шифратор тексту передано пустий рядок!")
     if mode == "bits":
         return encrypt_text_bytes(content, gen)
     else:
         enrypted_text = encrypt_text_chars(content, gen)
         return enrypted_text
 def decrypt_text(content, gen, mode):
+    if len(content) == 0:
+        raise ValueError("Помилка дешифрування! В дешифратор тексту передано пустий рядок!")
     if mode == "bits":
         return decrypt_text_bytes(content, gen)
     else:

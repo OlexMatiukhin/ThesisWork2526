@@ -90,7 +90,7 @@ def embed_header_rgb_in_padding(P_sq: np.ndarray, M: int, N: int) -> np.ndarray:
     P_flatten= P_sq.reshape(-1)
     P_flatten[-HEADER_LEN:]= hdr
     P_sq_redeacted = P_flatten.reshape(P_sq.shape)
-    return P_sq_redeacted;
+    return P_sq_redeacted
 def extract_header (P_sq: np.ndarray):
     v = P_sq.reshape(-1)
     hdr = v[-HEADER_LEN:].tobytes()
@@ -243,7 +243,7 @@ def encrypt_image(original_file, gen):
         #image_3.show()
         return add_marker(buf.getvalue(), "")
     except Exception as e:
-        raise RuntimeError(f"Image processing failed: {e}") from e
+        raise RuntimeError(f"Помилка при шифруванні зображення: {e}") from e
 
 #Decrypt
 def decrypt_image(original_file, gen):
@@ -264,7 +264,7 @@ def decrypt_image(original_file, gen):
             [2, 1]], dtype=np.float64)
         k=log_integer_exponent(r, base_matrix_for_scrambling.shape[0])
         if(not k):
-            raise ValueError("Error during decryption. Image should be quadratic!")
+            raise ValueError("Направильний розмір зображення!")
 
         iterations = k - 1
         general_number_element = number_element + 2 * (number_element * 3)
@@ -274,7 +274,14 @@ def decrypt_image(original_file, gen):
         C3 = C[number_element * 4:]
         array_defused_reverese = diffusion_decrypt(C2, C3, pixels)
         descrambled_array = scrambling_decryp(C1, r, iterations, array_defused_reverese, base_matrix_for_scrambling)
-        old_matrix_size_H,  old_matrix_size_W = extract_header(descrambled_array)
+
+        header = extract_header(descrambled_array)
+        print(header)
+        if header is None:
+            raise ValueError(
+                "Помилка! Зображення не було зашифроване цією програмою, невірний ключ або пошкоджений файл."
+            )
+        old_matrix_size_H, old_matrix_size_W = header
         cutted_array = remove_additional_elements_from_matrix(old_matrix_size_H, old_matrix_size_W, descrambled_array)
         redacted_image = Image.fromarray(cutted_array, mode='RGB')
         buf = BytesIO()
@@ -284,7 +291,9 @@ def decrypt_image(original_file, gen):
         #image_3=Image.fromarray(cutted_array,mode='RGB')
         #image_3.show()
         return buf.getvalue()
+    except ValueError:
+        raise  ValueError("Помилка дешифрування зображення! Невірний розмір або пошкоджений файл або невірний ключ!")
     except Exception as e:
-        raise RuntimeError(f"Image processing failed: {e}") from e
+        raise RuntimeError(f"Помилка дешифрування зображення: {e}") from e
 
 

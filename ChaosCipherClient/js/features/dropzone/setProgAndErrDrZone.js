@@ -19,7 +19,16 @@ export function setProgressBar(zone,value, show){
         }
 }
 
-  export  function setError(zone,value, show){
+
+
+
+export function setError(zone, value, show) {
+    const errorBlock = document.getElementsByClassName('dz-error')[0];
+    if (!errorBlock) return;
+    errorBlock.style.display = show ? "block" : "none";
+    errorBlock.textContent = show ? value : "";
+}
+/*export  function setError(zone,value, show){
         let error_block=document.getElementsByClassName('dz-error')[0];
         if(show){
             error_block.style.display="block";
@@ -30,4 +39,4 @@ export function setProgressBar(zone,value, show){
             error_block.textContent=value;
         }
 
-}
+}*/

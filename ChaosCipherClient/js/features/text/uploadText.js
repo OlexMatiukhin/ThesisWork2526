@@ -1,6 +1,6 @@
 //-------------------------------Upload Text on Server--------------------------------------------------   
 import { API } from "../../config.js";
-import { getDataFromActiveParametersFormANDHeader } from "../formData/getFromData.js";
+import { buildRequestFormData } from "../formData/getFromData.js";
 import { setErrorInDataBlock, setProgressBarInDataBlock } from "../dataBlock/setProgressAndErrorBlock.js";
 import { setInputTextError, setResultInputError } from "../text/setTextError.js"
 export function uploadText(zone, operation) {
@@ -14,7 +14,7 @@ export function uploadText(zone, operation) {
         setInputTextError("Введіть текст перед відправкою", true)
         return
     }
-    const formData = getDataFromActiveParametersFormANDHeader();
+    const formData = buildRequestFormData();
     if (!formData) return
     formData.set("operation", operation);
     formData.append("data_type", "text")
@@ -36,7 +36,7 @@ export function uploadText(zone, operation) {
         setProgressBarInDataBlock(textBlock, pct, true);
     })
     xhr.addEventListener("load", () => {
-        if (xhr.status === 300 || xhr.status === 200) {
+        if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
             processedText.value = response.processed_text;
             setProgressBarInDataBlock(textBlock, 100, true);
@@ -46,14 +46,27 @@ export function uploadText(zone, operation) {
         else {
 
             setProgressBarInDataBlock(textBlock, 0, false)
-            setResultInputError("Помилка при завнтаженні даних на сервер.", true);
+            let errorMessage ="Помилка при відправці даних на сервер.";
+            try {
+                const response = JSON.parse(xhr.responseText);
+
+                if (response.detail) {
+                    errorMessage = response.detail;
+                }
+                setResultInputError(errorMessage, true);
+
+            }
+
+            catch (e) {
+                console.error("Error parsing server response:", e);
+            }
         }
     })
 
     xhr.addEventListener("error", () => {
         console.error("Error during text upload:", xhr.statusText);
         setProgressBarInDataBlock(textBlock, 0, false)
-        setResultInputError(`${xhr.status} - Помилка при відправці даних на сервер.`, true);
+        setResultInputError(`Помилка при відправці даних на сервер. Відсутній доступ або ж сервер тимчасово не працює.`, true);
     })
     xhr.addEventListener("abort", () => {
         setProgressBarInDataBlock(textBlock, 0, false);

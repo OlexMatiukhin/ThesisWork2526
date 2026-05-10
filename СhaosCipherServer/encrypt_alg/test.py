@@ -1,6 +1,6 @@
 from io import BytesIO
 
-import encrypt_alg.audio_encypt as audio_encypt
+
 from strategies import ImageCryptor, TextCryptor
 from generators import ChaosFactory
 #import PIL.Image as Image
@@ -30,7 +30,3 @@ decrypted_text = text_strategy.process(encrypted_text, gen1, "decrypt", "chars")
 print(encrypted_text)
 print(decrypted_text)"""
 
-filename = "C:\\Windows\\Media\\Alarm01.wav"
-with open(filename, "rb") as f:
-    audio_bytes = f.read()
-encrypted_audio = audio_encypt.encrypt_auido(audio_bytes,gen1)

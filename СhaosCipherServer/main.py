@@ -10,6 +10,7 @@ from orchestrator import CryptoOrchestrator
 from fastapi import FastAPI
 from pathlib import Path
 orchestrator=CryptoOrchestrator()
+from fastapi import HTTPException
 app = FastAPI()
 
 app.add_middleware(
@@ -36,26 +37,30 @@ async def encrypt_image_enpoint(
         mode: str = Form(...),
         file: UploadFile = File(...),
 ):
-    original_file=await file.read()
-    params_obj = json.loads(params)
-    mode = mode.strip().lower()
-    encrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode="",
-        content=original_file,
-        process_type="encrypt"
-    )
+    try:
+        original_file=await file.read()
+        params_obj = json.loads(params)
+        mode = mode.strip().lower()
+        encrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="",
+            content=original_file,
+            process_type="encrypt"
+        )
+        return Response(
+            content=encrypted_content,
+            media_type="image/png",
+            headers={"Content-Disposition": 'attachment; filename="processed.png"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 
-
-
-    new_filename=f"processed_{file.filename}"
-    return Response(
-        content=encrypted_content,
-        media_type="image/png",
-        headers={"Content-Disposition": 'attachment; filename="processed.png"'}
-    )
 @app.post("/decrypt/image")
 async def decrypt_image_enpoint(
         system: str = Form(...),
@@ -64,25 +69,31 @@ async def decrypt_image_enpoint(
         mode: str = Form(...),
         file: UploadFile = File(...),
 ):
-    original_file = await file.read()
-    mode = mode.strip().lower()
-    params_obj = json.loads(params)
-    decrted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        content=original_file,
-        mode="",
-        process_type="decrypt"
-    )
+    try:
+        original_file = await file.read()
+        mode = mode.strip().lower()
+        params_obj = json.loads(params)
+        decrted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            content=original_file,
+            mode="",
+            process_type="decrypt"
+        )
 
-    new_filename = f"processed_{file.filename}"
-    return Response(
-        content=decrted_content,
-        media_type="image/png",
-        headers={"Content-Disposition": 'attachment; filename="processed.png"'}
-    )
-
+        new_filename = f"processed_{file.filename}"
+        return Response(
+            content=decrted_content,
+            media_type="image/png",
+            headers={"Content-Disposition": 'attachment; filename="processed.png"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 @app.post("/encrypt/text")
 async def encrypt_text_ednpoint(
         system: str = Form(...),
@@ -91,21 +102,28 @@ async def encrypt_text_ednpoint(
         mode: str = Form(...),
         text:str=Form(...)
 ):
-    mode = mode.strip().lower()
-    params_obj = json.loads(params)
-    encrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode=mode,
-        content=text,
-        process_type="encrypt"
-    )
-    print(mode)
-    return {
-        "status": "success",
-        "processed_text": encrypted_content,
-    }
+    try:
+        mode = mode.strip().lower()
+        params_obj = json.loads(params)
+        encrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode=mode,
+            content=text,
+            process_type="encrypt"
+        )
+        print(mode)
+        return {
+            "status": "success",
+            "processed_text": encrypted_content,
+        }
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 @app.post("/decrypt/text")
 async def decrypt_text_ednpoint(
         system: str = Form(...),
@@ -114,21 +132,28 @@ async def decrypt_text_ednpoint(
         mode: str = Form(...),
         text: str = Form(...)
 ):
-    mode = mode.strip().lower()
-    params_obj = json.loads(params)
-    decrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode=mode,
-        content=text,
-        process_type="decrypt"
-    )
+    try:
+        mode = mode.strip().lower()
+        params_obj = json.loads(params)
+        decrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode=mode,
+            content=text,
+            process_type="decrypt"
+        )
 
-    return {
-        "status": "success",
-        "processed_text": decrypted_content,
-    }
+        return {
+            "status": "success",
+            "processed_text": decrypted_content,
+        }
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 
 
 
@@ -140,22 +165,29 @@ async def encrypt_audio_enpoint(
         data_type:str=Form(...),
         file: UploadFile = File(...),
 ):
-    original_file = await file.read()
-    params_obj = json.loads(params)
-    encrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode="bits",
-        content=original_file,
-        process_type="encrypt"
-    )
-    new_filename = f"processed_{file.filename}"
-    return Response(
-        content=encrypted_content,
-        media_type=file.content_type,
-        headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
-    )
+    try:
+        original_file = await file.read()
+        params_obj = json.loads(params)
+        encrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            content=original_file,
+            process_type="encrypt"
+        )
+        new_filename = f"processed_{file.filename}"
+        return Response(
+            content=encrypted_content,
+            media_type=file.content_type,
+            headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 
 
 
@@ -166,22 +198,28 @@ async def decrypt_audio_enpoint(
         data_type: str = Form(...),
         file: UploadFile = File(...),
 ):
-    original_file = await file.read()
-    params_obj = json.loads(params)
-    decrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode="bits",
-        content=original_file,
-        process_type="decrypt"
-    )
-    new_filename = f"processed_{file.filename}"
-    return Response(
-        content=decrypted_content,
-        media_type=file.content_type,
-        headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
-    )
+    try:
+        original_file = await file.read()
+        params_obj = json.loads(params)
+        decrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            content=original_file,
+            process_type="decrypt"
+        )
+        return Response(
+            content=decrypted_content,
+            media_type=file.content_type,
+            headers={"Content-Disposition": f'attachment; filename="processed_{file.filename}"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 
 
 @app.post("/encrypt/file")
@@ -191,25 +229,32 @@ async def encrypt_file_enpoint(
         data_type:str=Form(...),
         file: UploadFile = File(...),
 ):
-    original_file = await file.read()
-    params_obj = json.loads(params)
-    encrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode="bits",
-        content=original_file,
-        process_type="encrypt",
+    try:
+        original_file = await file.read()
+        params_obj = json.loads(params)
+        encrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            content=original_file,
+            process_type="encrypt",
 
-    )
-    in_name = file.filename
-    file_extention=Path(in_name).suffix.lstrip(".")
-    new_filename = f"processed_{file.filename}"
-    return Response(
-        content=encrypted_content,
-        media_type="application/octet-stream",
-        headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
-    )
+        )
+        in_name = file.filename
+        file_extention=Path(in_name).suffix.lstrip(".")
+        new_filename = f"processed_{file.filename}"
+        return Response(
+            content=encrypted_content,
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
 
 
 
@@ -222,24 +267,32 @@ async def decrypt_file_enpoint(
         data_type:str=Form(...),
         file: UploadFile = File(...),
 ):
-    original_file = await file.read()
-    params_obj = json.loads(params)
-    decrypted_content = orchestrator.execute_request(
-        system_type=system,
-        system_params=params_obj,
-        crypt_method=data_type,
-        mode="bits",
-        content=original_file,
-        process_type="decrypt",
+    try:
+        original_file = await file.read()
+        params_obj = json.loads(params)
+        decrypted_content = orchestrator.execute_request(
+            system_type=system,
+            system_params=params_obj,
+            crypt_method=data_type,
+            mode="bits",
+            content=original_file,
+            process_type="decrypt",
 
-    )
-    in_name = file.filename
-    file_extention = Path(in_name).suffix.lstrip(".")
-    return Response(
-        content=decrypted_content,
-        media_type="application/octet-stream",
-        headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
-    )
+        )
+        in_name = file.filename
+        file_extention = Path(in_name).suffix.lstrip(".")
+        return Response(
+            content=decrypted_content,
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="processed.{file_extention}"'}
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Внутрішня помилка: {str(e)}")
+app.mount("/", StaticFiles(directory=CLIENT_DIR), name="client")
 
 """
 @app.post("/encrypt/audio")
@@ -353,4 +406,4 @@ async def encrypt_file_endpoint(
     )
 """
 
-app.mount("/", StaticFiles(directory=CLIENT_DIR), name="client")
+

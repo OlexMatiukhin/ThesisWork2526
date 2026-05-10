@@ -273,6 +273,7 @@ option {
         position: absolute;
         top: calc(100% + 10px);
         left: 0;
+        margin-left: 0;
         width: 100%;
         background: #1E50DA;
         border: none;
@@ -453,7 +454,7 @@ option {
     }
 
     .parameters input {
-        width: clamp(65px, 40vw, 180px);
+        width: clamp(45px, 40vw, 180px);
         min-width: 65px;
     }
 }
@@ -858,7 +859,8 @@ option {
 .processed-text-content {
     width: 100%;
     flex: 1;
-    min-height: 200px;
+    min-height: 150px;
+    max-height: 150px;
     border: none;
     outline: none;
     resize: none;
@@ -963,6 +965,11 @@ option {
 
 .encrypt-text-btn,
 .decrypt-text-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
     padding: 12px 50px;
     border-radius: 14px;
     border: none;
@@ -973,6 +980,11 @@ option {
     font-size: 15px;
     cursor: pointer;
     transition: all .18s;
+}
+.encrypt-text-btn svg,
+.decrypt-text-btn svg {
+    height: 14px;
+    width: 14px;
 }
 
 .decrypt-text-btn {
@@ -1008,8 +1020,43 @@ option {
         transform: rotate(90deg);
     }
 }
+@media (max-width: 740px) {
+    .original-text,
+    .processed-text {
+        min-height: 100px;      /* ← БІЛЬШЕ МІСЦЯ */
+    }
 
-.error {
+    .text-block-head,
+    .text-block-footer {
+        padding: 10px 12px;     /* менші відступи */
+    }
+
+    .text-icon-btn {
+        width: 26px;            /* менші кнопки */
+        height: 26px;
+    }
+
+    .text-icon-btn svg {
+        width: 12px;            /* менші іконки */
+        height: 12px;
+    }
+
+    .original-text-content,
+    .processed-text-content {
+        font-size: 16px;        /* менший шрифт */
+        padding: 10px 12px;
+         min-height: 120px;    /* менше місце */
+    }
+    .buttons-wrapper-text{
+        padding: 10px 0;
+    }
+    .encrypt-text-btn, .decrypt-text-btn {
+
+        padding: 10px 30px;
+    } 
+}
+
+.textarea-error {
     color: red;
 }
 

@@ -276,6 +276,7 @@ option {
         display: none;
         position: absolute;
         top: calc(100% + 10px);
+        margin-left: 0;
         left: 0;
         width: 100%;
         background: #1E50DA;

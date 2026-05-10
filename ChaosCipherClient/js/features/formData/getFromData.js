@@ -1,6 +1,6 @@
     import { validateActiveParams } from "../formData/validateActiveParams.js";
 
-    export function getDataFromActiveParametersFormANDHeader(){
+    export function buildRequestFormData(){
         const formData = new FormData();
         const validation = validateActiveParams();
         if(!validation.validationPassed){

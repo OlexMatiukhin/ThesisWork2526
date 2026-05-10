@@ -45,7 +45,7 @@ VERSION = 1
 
 def add_marker(data: bytes, original_filename: str = "") -> bytes:
     name_bytes = original_filename.encode("utf-8")[:255]
-    marker_size = len(MAGIC) + 1 + 1 + 8 + len(name_bytes) + 4  # +4 — само поле marker_size
+    marker_size = len(MAGIC) + 1 + 1 + 8 + len(name_bytes) + 4  
 
     marker = (
         MAGIC
@@ -53,7 +53,7 @@ def add_marker(data: bytes, original_filename: str = "") -> bytes:
         + struct.pack("B", len(name_bytes))
         + struct.pack(">Q", int(time.time()))
         + name_bytes
-        + struct.pack(">I", marker_size)  # размер в конце — ключ для поиска
+        + struct.pack(">I", marker_size)  
     )
     return data + marker
 
@@ -62,16 +62,16 @@ def remove_marker(data: bytes) -> tuple[bytes, dict | None]:
     if len(data) < 4:
         return data, None
 
-    # Читаем последние 4 байта — размер маркера
+
     marker_size = struct.unpack(">I", data[-4:])[0]
 
     if marker_size > len(data) or marker_size < len(MAGIC) + 1 + 1 + 8 + 4:
-        return data, None  # невалидный размер
+        return data, None  
 
     marker_block = data[-marker_size:]
 
     if not marker_block.startswith(MAGIC):
-        return data, None  # не наш маркер
+        return data, None  
 
     offset = len(MAGIC)
     version   = marker_block[offset];     offset += 1

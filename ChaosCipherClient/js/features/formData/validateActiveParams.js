@@ -34,36 +34,42 @@ function parseNumberInput(input) {
 
 const blockRules = {
     "lorenz-params": {
+        logisticXLorenz: { min: 0, max: 1,},  
         lorenzX: { min: -20, max: 20 },
         lorenzY: { min: -20, max: 20 },
         lorenzZ: { min: 0, max: 60 }
     },
 
     "rossler-params": {
+        logisticXRossler: { min: 0, max: 1,},  
         rosslerX: { min: -15, max: 15 },
         rosslerY: { min: -15, max: 15 },
         rosslerZ: { min: 0, max: 25 }
     },
 
     "chua-params": {
+        logisticXChua: { min: 0, max: 1,},  
         chuaX: { min: -3, max: 3 },
         chuaY: { min: -2, max: 2 },
         chuaZ: { min: -3, max: 3 }
     },
 
     "duffing-params": {
+        logisticXDuffing: { min: 0, max: 1,}, 
         duffingX: { min: -2, max: 2 },
         duffingY: { min: -2, max: 2 },
         duffingT: { min: undefined, max:undefined }
     },
 
     "pol-params": {
+        logisticXPol: { min: 0, max: 1,}, 
         polX: { min: -3, max: 3 },
         polY: { min: -8, max: 8 },
         polT: { min: undefined, max:undefined }
     },
 
     "forced-params": {
+        logisticXForced: { min: 0, max: 1,}, 
         forcedX: { min: -Math.PI, exclusiveMax: Math.PI }, 
         forcedY: { min: -6, max: 6 },  
         forcedT:  { min: undefined, max:undefined }               
@@ -76,9 +82,14 @@ function validateContinuousSystemParams(activeBlock, paramsObj) {
     for (const [fieldName, limits] of Object.entries(rules)) {
         const input = activeBlock.querySelector(`[name="${fieldName}"]`);
        
-        const { value } = parseNumberInput(input);
-   if (input.validity.badInput || value === "" || !Number.isFinite(value)) {
+       const { raw, value } = parseNumberInput(input);
+       const digitsOnly = raw.replace(/[.,-]/g, "").replace(/\D/g, "");
+       if (input.validity.badInput || raw === "" || !Number.isFinite(value)) {
             showValidationError(input, `"${fieldName}" має бути числом`);
+            return { validationPassed: false, paramsObj: null };
+        }
+        if (digitsOnly.length> 12 ){
+            showValidationError(input, `"${fieldName}" має бути не більше 12 цифр`);
             return { validationPassed: false, paramsObj: null };
         }
         if (limits.min !== undefined && value < limits.min) {
@@ -108,31 +119,6 @@ export function validateActiveParams(){
         alert("Немає видимого блоку з параметрами!")
         return {validationPassed: false, paramsObj:null}
     }
-
     clearValidationErrors(activeBlock);
-
-     const logisticInput = [...activeBlock.querySelectorAll("input[type='number']")]
-        .find(input => input.name.toLowerCase().startsWith("logistic"));
-
-    if (!logisticInput) {
-        alert("Поле logisticX не знайдено");
-        return { validationPassed: false, paramsObj: null };
-    }
-
-    const { value: logisticValue } = parseNumberInput(logisticInput);
-
-  if (logisticInput.validity.badInput || logisticValue === "" || !Number.isFinite(logisticValue)) {
-        showValidationError(logisticInput, `"${logisticInput.name}" має бути числом`);
-        return { validationPassed: false, paramsObj: null };
-    }
-
-    if (!(logisticValue > 0 && logisticValue < 1)) {
-        showValidationError(
-            logisticInput,
-            `"${logisticInput.name}" має бути в діапазоні (0,1)`
-        );
-        return { validationPassed: false, paramsObj: null };
-    }
-    paramsObj[logisticInput.name] = logisticValue;
     return validateContinuousSystemParams(activeBlock, paramsObj);
 }
